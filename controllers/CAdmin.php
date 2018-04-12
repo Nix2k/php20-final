@@ -1,0 +1,130 @@
+<?php
+class CAdmin
+{
+	public function manage($pdo, $twig)
+	{
+		$admins = new Admins();
+		if ($admins->getAllAdmins($pdo)) {
+			$template = $twig->loadTemplate('admin.html');
+			$params = array('user'=>$_SESSION['admin'], 'content' => 'admin_manage.html', 'admins' => $admins);
+			$template->display($params);
+		}
+		else {
+			die("Не получена информация об администраторах.");
+		}
+	}
+
+	public function registration($twig)
+	{
+		$template = $twig->loadTemplate('admin.html');
+		$params = array('user'=>$_SESSION['admin'], 'content' => 'registration.html');
+		$template->display($params);
+	}
+	
+	public function add($pdo)
+	{
+		if ((isset($_GET['login'])) && (isset($_GET['pass'])) && (isset($_GET['email']))) {
+			$login = clearInput($_GET['login']);
+			$password = clearInput($_GET['pass']);
+			$email = clearInput($_GET['email']);
+			$user = new Admin();
+			if (!$user->getUserByLogin($login, $pdo)) {
+				if (checkPass($password)) {
+					if ($user->addUser($login, $password, $email, $pdo)) {
+						header('Location: index.php?contr=theme&act=manage');
+					}
+					else {
+						die ('Ошибка регистрации пользователя');
+					}
+				}
+				else {
+					die('Пароль не достаточно сложный<br>Пароль должен состоять минимум из 8 символов, содержать большие и маленькие буквы латинского алфавита и цифры');
+				}
+			}
+			else {
+				die('Пользователь с таким именем уже зарегистрирован');
+			}
+		}	
+	}
+	
+	public function login($twig)
+	{
+		$template = $twig->loadTemplate('login.html');
+		$params = array();
+		$template->display($params);
+	}
+	
+	public function auth($pdo)
+	{
+		if ((isset($_GET['login'])) && (isset($_GET['pass']))) {
+			$login = clearInput($_GET['login']);
+			$password = clearInput($_GET['pass']);
+			$admin = new Admin();
+			if ($admin->loginUser($login,$password,$pdo)) {
+				header('Location: index.php');
+			}
+			else {
+				die('Неверное имя пользователя или пароль');
+			}
+		}
+	}
+
+	public function logout()
+	{
+		session_start();
+		session_destroy();
+		header('Location: index.php');
+	}
+
+	public function resetPassword($pdo, $twig)
+	{
+		if (isset($_GET['id'])) {
+			$id = clearInput($_GET['id']);
+			$admin = new Admin();
+			$admin->getUserById($id,$pdo);
+			$template = $twig->loadTemplate('admin.html');
+			$params = array('user'=>$_SESSION['admin'], 'content' => 'admin_reset_password.html', 'admin' => $admin);
+			$template->display($params);
+		}
+	}
+
+	public function setPassword($pdo)
+	{
+		if ((isset($_GET['login'])) && (isset($_GET['pass']))) {
+			$login = clearInput($_GET['login']);
+			$password = clearInput($_GET['pass']);
+			$user = new Admin();
+			if ($user->getUserByLogin($login, $pdo)) {
+				if (checkPass($password)) {
+					if ($user->setPassword($password, $pdo)) {
+						header('Location: index.php?contr=admin&act=manage');
+					}
+					else {
+						die ('Ошибка задания пароля');
+					}
+				}
+				else {
+					die('Пароль не достаточно сложный<br>Пароль должен состоять минимум из 8 символов, содержать большие и маленькие буквы латинского алфавита и цифры');
+				}
+			}
+			else {
+				die('Пользователь с таким именем не зарегистрирован');
+			}
+		}	
+	}
+
+	public function delete($pdo)
+	{
+		if (isset($_GET['id'])) {
+			$id = clearInput($_GET['id']);
+			$admin = new Admin();
+			$admin->getUserById($id,$pdo);
+			$admin->deleteMe($pdo);
+			header('Location: index.php?contr=admin&act=manage');
+		}
+		else {
+			die('Не удалось удалить пользователя');
+		}
+	}
+}	
+?>
