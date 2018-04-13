@@ -23,8 +23,10 @@ class Themes
 
 	public function printAllThemes()
 	{
-		foreach ($this->allThemes as $value) {
-			$value->printThemeForInfo();
+		if (isset($this->allThemes)){
+			foreach ($this->allThemes as $value) {
+				$value->printThemeForInfo();
+			}
 		}
 	}
 }
