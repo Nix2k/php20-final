@@ -2,7 +2,7 @@
 require_once __DIR__.'/routines.php';
 require __DIR__.'/controllers/CAdmin.php';
 
-$admin = new admin();
+$admin = new Admin();
 
 if ((isset($_GET['contr'])) && ($_GET['contr']!='') && (isset($_GET['act'])) && ($_GET['act']!='')){
 	$contr = clearInput($_GET['contr']);
