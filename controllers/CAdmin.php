@@ -31,7 +31,7 @@ class CAdmin
 			if (!$user->getUserByLogin($login, $pdo)) {
 				if (checkPass($password)) {
 					if ($user->addUser($login, $password, $email, $pdo)) {
-						header('Location: index.php?contr=theme&act=manage');
+						header('Location: index.php?contr=admin&act=manage');
 					}
 					else {
 						die ('Ошибка регистрации пользователя');
