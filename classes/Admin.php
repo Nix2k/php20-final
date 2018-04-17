@@ -62,7 +62,7 @@ class Admin
 		}
 	}
 
-	public function isLogedin ($pdo)
+	public function isLogedin($pdo)
 	{
 		if ((isset($_SESSION['admin']))&&(isset($_SESSION['password']))) {
 			$name = clearInput($_SESSION['admin']);
@@ -88,17 +88,17 @@ class Admin
 		}
 	}
 
-	public function getId ()
+	public function getId()
 	{
 		return $this->id;
 	}
 
-	public function getName ()
+	public function getName()
 	{
 		return $this->name;
 	}
 
-	public function getEmail ()
+	public function getEmail()
 	{
 		return $this->email;
 	}
@@ -118,6 +118,24 @@ class Admin
 		$sql = "DELETE FROM `admin` WHERE `id`=".$this->id;
 		if ($pdo->exec($sql)==1) {
 			return true;
+		}
+		else {
+			return false;
+		}
+	}
+
+	public function getAllAdmins($pdo)
+	{
+		$sql = 'SELECT id FROM admin';
+		$data = $pdo->query($sql);
+		if ($data) {
+			$allAdmins = array();
+			foreach ($data as $value) {
+				$admin = new Admin();
+				$admin->getUserById($value['id'], $pdo);
+				$allAdmins[] = $admin;
+			}
+			return $allAdmins;
 		}
 		else {
 			return false;

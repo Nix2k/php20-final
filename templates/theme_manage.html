@@ -7,7 +7,15 @@
 		<th>Без ответа</th>
 		<th>Действия</th>
 	</tr>
-	{{ themes.printAllThemes() }}
+	{% for theme in themes %}
+	<tr>
+		<th>{{ theme.getName() }}</th>
+		<th>{{ theme.getNumOfQuestions() }}</th>
+		<th>{{ theme.getNumOfPublished() }}</th>
+		<th>{{ theme.getNumOfUnanswered() }}</th>
+		<th><a href='index.php?contr=theme&act=delete&id={{ theme.getId() }}'>Удалить</a></th>
+	</tr>
+	{% endfor %}
 </table>
 <h2>Добавление темы</h2>
 <form action="index.php" method="GET">

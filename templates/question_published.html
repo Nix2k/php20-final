@@ -1,0 +1,15 @@
+<h2>{{ currentTheme.getName }}</h2>
+{% if questions %}
+	{% for question in questions %}
+
+	{% endfor %}
+{% endif %}
+<h2>Задать вопрос</h2>
+<form action="index.php" method="get">
+	<input type="hidden" name="contr" value="question">
+	<input type="hidden" name="act" value="add">
+	<input type="hidden" name="themeid" value="{{ currentTheme.getId }}">
+	<input type="email" name="email" placeholder="Эл. почта" required><br>
+	<textarea name="text" placeholder="Текст вопроса" required></textarea><br>
+	<input type="submit" name="submit" value="Задать вопрос"><br>
+</form>

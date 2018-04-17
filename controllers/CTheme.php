@@ -1,21 +1,24 @@
 <?php
 class CTheme
 {
+	public function __call($name, $arguments) {
+		die('Неизвестное действие');
+	}
+	
 	public function manage($pdo, $twig)
 	{
-		$themes = new Themes();
-		if ($themes->getAllThemes($pdo)) {
-			$template = $twig->loadTemplate('admin.html');
-			$params = array('user'=>$_SESSION['admin'], 'content' => 'theme_manage.html', 'themes' => $themes);
-			$template->display($params);
-		}
-		else {
-			die("Не получена информация о темах");
-		}
+		$admin = new Admin();
+		if (!$admin->isLogedin($pdo)) header('Location: index.php?contr=admin&act=login');
+		$themes = Theme::getAllThemes($pdo);
+		$template = $twig->loadTemplate('admin.html');
+		$params = array('user'=>$_SESSION['admin'], 'content' => 'theme_manage.html', 'themes' => $themes);
+		$template->display($params);
 	}
 
-	public function add($pdo)
+	public function add($pdo, $twig)
 	{
+		$admin = new Admin();
+		if (!$admin->isLogedin($pdo)) header('Location: index.php?contr=admin&act=login');
 		if (isset($_GET['name'])) {
 			$name = clearInput($_GET['name']);
 			$theme = new Theme();
@@ -30,8 +33,10 @@ class CTheme
 		}	
 	}
 
-	public function delete($pdo)
+	public function delete($pdo, $twig)
 	{
+		$admin = new Admin();
+		if (!$admin->isLogedin($pdo)) header('Location: index.php?contr=admin&act=login');
 		if (isset($_GET['id'])) {
 			$id = clearInput($_GET['id']);
 			$theme = new Theme();

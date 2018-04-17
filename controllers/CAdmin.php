@@ -1,10 +1,16 @@
 <?php
 class CAdmin
 {
+	public function __call($name, $arguments) {
+		die('Неизвестное действие');
+	}
+
 	public function manage($pdo, $twig)
-	{
-		$admins = new Admins();
-		if ($admins->getAllAdmins($pdo)) {
+	{	
+		$admin = new Admin();
+		if (!$admin->isLogedin($pdo)) header('Location: index.php?contr=admin&act=login');
+		$admins = $admin->getAllAdmins($pdo);
+		if ($admins) {
 			$template = $twig->loadTemplate('admin.html');
 			$params = array('user'=>$_SESSION['admin'], 'content' => 'admin_manage.html', 'admins' => $admins);
 			$template->display($params);
@@ -14,14 +20,14 @@ class CAdmin
 		}
 	}
 
-	public function registration($twig)
+	public function reg($pdo, $twig)
 	{
 		$template = $twig->loadTemplate('admin.html');
 		$params = array('user'=>$_SESSION['admin'], 'content' => 'registration.html');
 		$template->display($params);
 	}
 	
-	public function add($pdo)
+	public function add($pdo, $twig)
 	{
 		if ((isset($_GET['login'])) && (isset($_GET['pass'])) && (isset($_GET['email']))) {
 			$login = clearInput($_GET['login']);
@@ -47,14 +53,14 @@ class CAdmin
 		}	
 	}
 	
-	public function login($twig)
+	public function login($pdo, $twig)
 	{
 		$template = $twig->loadTemplate('login.html');
 		$params = array();
 		$template->display($params);
 	}
 	
-	public function auth($pdo)
+	public function auth($pdo, $twig)
 	{
 		if ((isset($_GET['login'])) && (isset($_GET['pass']))) {
 			$login = clearInput($_GET['login']);
@@ -69,18 +75,19 @@ class CAdmin
 		}
 	}
 
-	public function logout()
+	public function logout($pdo, $twig)
 	{
 		session_start();
 		session_destroy();
 		header('Location: index.php');
 	}
 
-	public function resetPassword($pdo, $twig)
+	public function resetpass($pdo, $twig)
 	{
+		$admin = new Admin();
+		if (!$admin->isLogedin($pdo)) header('Location: index.php?contr=admin&act=login');
 		if (isset($_GET['id'])) {
 			$id = clearInput($_GET['id']);
-			$admin = new Admin();
 			$admin->getUserById($id,$pdo);
 			$template = $twig->loadTemplate('admin.html');
 			$params = array('user'=>$_SESSION['admin'], 'content' => 'admin_reset_password.html', 'admin' => $admin);
@@ -88,15 +95,16 @@ class CAdmin
 		}
 	}
 
-	public function setPassword($pdo)
+	public function setpass($pdo, $twig)
 	{
+		$admin = new Admin();
+		if (!$admin->isLogedin($pdo)) header('Location: index.php?contr=admin&act=login');
 		if ((isset($_GET['login'])) && (isset($_GET['pass']))) {
 			$login = clearInput($_GET['login']);
 			$password = clearInput($_GET['pass']);
-			$user = new Admin();
-			if ($user->getUserByLogin($login, $pdo)) {
+			if ($admin->getUserByLogin($login, $pdo)) {
 				if (checkPass($password)) {
-					if ($user->setPassword($password, $pdo)) {
+					if ($admin->setPassword($password, $pdo)) {
 						header('Location: index.php?contr=admin&act=manage');
 					}
 					else {
@@ -113,11 +121,12 @@ class CAdmin
 		}	
 	}
 
-	public function delete($pdo)
+	public function delete($pdo, $twig)
 	{
+		$admin = new Admin();
+		if (!$admin->isLogedin($pdo)) header('Location: index.php?contr=admin&act=login');
 		if (isset($_GET['id'])) {
 			$id = clearInput($_GET['id']);
-			$admin = new Admin();
 			$admin->getUserById($id,$pdo);
 			$admin->deleteMe($pdo);
 			header('Location: index.php?contr=admin&act=manage');

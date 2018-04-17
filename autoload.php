@@ -8,6 +8,8 @@
 			elseif (file_exists("./controllers/$fileName.php")) {
 				require_once "./controllers/$fileName.php";
 			}
+			else
+				die('Неизвестное действие');
 		}
 	);
 ?>

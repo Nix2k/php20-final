@@ -3,9 +3,9 @@
 	{
 		private $id;
 		private $name;
-		private $numOfQuestion;
-		private $published;
-		private $unanswered;
+		private $numOfQuestions;
+		private $numOfPublished;
+		private $numOfUnanswered;
 
 		public function getThemeById($id, $pdo)
 		{
@@ -15,26 +15,11 @@
 				foreach ($data as $value) {
 					$this->id = $value['id'];
 					$this->name = $value['theme'];
+					$this->numOfQuestions = $this->getNumOfQustionsInDB($pdo);
+					$this->numOfPublished = $this->getNumOfPublishedQuestionsInDB($pdo);
+					$this->numOfUnanswered = $this->getNumOfUnansweredQuestionsInDB($pdo);
+					return true;
 				}
-				$sql = "SELECT * FROM question WHERE themeId=".$this->id;
-				$data = $pdo->query($sql);
-				if ($data) 
-					$this->numOfQuestion = $data->rowCount();
-				else
-					$this->numOfQuestion = 0;
-				$sql = "SELECT * FROM question WHERE themeId=".$this->id." AND answerId IS NOT NULL AND blocked IS NULL";
-				$data = $pdo->query($sql);
-				if ($data)
-					$this->published = $data->rowCount();
-				else
-					$this->published = 0;
-				$sql = "SELECT * FROM question WHERE themeId=".$this->id." AND answerId IS NULL";
-				$data = $pdo->query($sql);
-				if ($data)
-					$this->unanswered = $data->rowCount();
-				else
-					$this->unanswered = 0;
-				return true;
 			}
 			return false;
 		}
@@ -62,25 +47,29 @@
 			return $pdo->exec($sql);
 		}
 
-		public function printThemeForInfo()
-		{
-			echo "<tr>
-				<td>$this->name</td>
-				<td>$this->numOfQuestion</td>
-				<td>$this->published</td>
-				<td>$this->unanswered</td>
-				<td><a href='index.php?contr=theme&act=delete&id=$this->id'>Удалить</a></td>
-			</tr>";
-		}
-
-		public function getId ()
+		public function getId()
 		{
 			return $this->id;
 		}
 
-		public function getName ()
+		public function getName()
 		{
 			return $this->name;
+		}
+
+		public function getNumOfQuestions()
+		{
+			return $this->numOfQuestions;
+		}
+
+		public function getNumOfPublished()
+		{
+			return $this->numOfPublished;
+		}
+
+		public function getNumOfUnanswered()
+		{
+			return $this->numOfUnanswered;
 		}
 
 		public function deleteMe($pdo)
@@ -92,6 +81,54 @@
 			else {
 				return false;
 			}
+		}
+
+		public function getAllThemes($pdo)
+		{
+			$sql = 'SELECT id FROM theme';
+			$data = $pdo->query($sql);
+			if ($data) {
+				$allThemes = array();
+				foreach ($data as $value) {
+					$theme = new Theme();
+					$theme->getThemeById($value['id'], $pdo);
+					$allThemes[] = $theme;
+				}
+				return $allThemes;
+			}
+			else {
+				return false;
+			}
+		}
+
+		public function getNumOfQustionsInDB($pdo)
+		{
+			$sql = "SELECT * FROM question WHERE themeId=".$this->id;
+			$data = $pdo->query($sql);
+			if ($data) 
+				return $data->rowCount();
+			else
+				return 0;
+		}
+
+		public function getNumOfPublishedQuestionsInDB($pdo)
+		{
+			$sql = "SELECT * FROM question WHERE themeId=".$this->id." AND answerId IS NOT NULL AND blocked IS NULL";
+			$data = $pdo->query($sql);
+			if ($data)
+				return $data->rowCount();
+			else
+				return 0;
+		}
+
+		public function getNumOfUnansweredQuestionsInDB($pdo)
+		{
+			$sql = "SELECT * FROM question WHERE themeId=".$this->id." AND answerId IS NULL";
+				$data = $pdo->query($sql);
+				if ($data)
+					return  $data->rowCount();
+				else
+					return  0;
 		}
 
 	}

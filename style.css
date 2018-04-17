@@ -45,12 +45,16 @@ th {
 	text-align: center;
 }
 
-input {
+input, textarea {
 	margin: 10px auto;
 	padding: 8px;
 	border-radius: 2px;
 	border-style: solid;
 	border-width: 1px;
+}
+
+input[type="text"], input[type="email"], input[type="password"], textarea {
+	min-width: 400px;
 }
 
 a {
