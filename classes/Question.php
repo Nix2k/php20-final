@@ -5,7 +5,7 @@ class Question
 	private $themeId;
 	private $email;
 	private $text;
-	private $answerId;
+	private $answer;
 	private $blocked;
 	private $date;
 
@@ -19,7 +19,7 @@ class Question
 				$this->themeId = $question['themeId'];
 				$this->email = $question['email'];
 				$this->text = $question['text'];
-				$this->answerId = $question['answerId'];
+				$this->answer = $question['answer'];
 				$this->blocked = $question['blocked'];
 				$this->date = $question['date'];
 				return true;
@@ -30,7 +30,41 @@ class Question
 
 	public function getPublishedQuestions($themeId, $pdo)
 	{
-		$sql = "SELECT id FROM question WHERE themeId=".$themeId." AND answerId IS NOT NULL AND blocked IS NULL";
+		$sql = "SELECT id FROM question WHERE themeId=".$themeId." AND answer IS NOT NULL AND blocked IS NULL";
+		$data = $pdo->query($sql);
+		if ($data){
+			$questions = array();
+			foreach ($data as $value) {
+				$question = new Question();
+				$question->getQuestionById($value['id'], $pdo);
+				$questions[] = $question;
+			}
+			return $questions;
+		}
+		else
+			return false;;
+	}
+
+	public function getAllQuestions($themeId, $pdo)
+	{
+		$sql = "SELECT id FROM question WHERE themeId=".$themeId;
+		$data = $pdo->query($sql);
+		if ($data){
+			$questions = array();
+			foreach ($data as $value) {
+				$question = new Question();
+				$question->getQuestionById($value['id'], $pdo);
+				$questions[] = $question;
+			}
+			return $questions;
+		}
+		else
+			return false;;
+	}
+
+	public function getUnansweredQuestions($themeId, $pdo)
+	{
+		$sql = "SELECT id FROM question WHERE themeId=".$themeId." AND answer IS NULL";
 		$data = $pdo->query($sql);
 		if ($data){
 			$questions = array();
@@ -74,9 +108,9 @@ class Question
 		return $this->text;
 	}
 
-	public function getAnswerId()
+	public function getAnswer()
 	{
-		return $this->answerId;
+		return $this->answer;
 	}
 
 	public function getBlocked()
@@ -87,6 +121,50 @@ class Question
 	public function getDate()
 	{
 		return $this->date;
+	}
+
+	public function deleteme($pdo)
+	{
+		$sql = "DELETE FROM question WHERE id=".$this->id;
+		if ($pdo->exec($sql)==1) {
+			return true;
+		}
+		else {
+			return false;
+		}
+	}
+
+	public function block($pdo)
+	{
+		$sql = "UPDATE question SET blocked=1 WHERE id=".$this->id;
+		if ($pdo->exec($sql)==1) {
+			return true;
+		}
+		else {
+			return false;
+		}
+	}
+
+	public function unblock($pdo)
+	{
+		$sql = "UPDATE question SET blocked=null WHERE id=".$this->id;
+		if ($pdo->exec($sql)==1) {
+			return true;
+		}
+		else {
+			return false;
+		}
+	}
+
+	public function answer($answer, $pdo)
+	{
+		$sql = "UPDATE question SET answer='".$answer."' WHERE id=".$this->id;
+		if ($pdo->exec($sql)==1) {
+			return true;
+		}
+		else {
+			return false;
+		}
 	}
 
 }

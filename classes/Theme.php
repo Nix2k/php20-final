@@ -113,7 +113,7 @@
 
 		public function getNumOfPublishedQuestionsInDB($pdo)
 		{
-			$sql = "SELECT * FROM question WHERE themeId=".$this->id." AND answerId IS NOT NULL AND blocked IS NULL";
+			$sql = "SELECT * FROM question WHERE themeId=".$this->id." AND answer IS NOT NULL AND blocked IS NULL";
 			$data = $pdo->query($sql);
 			if ($data)
 				return $data->rowCount();
@@ -123,7 +123,7 @@
 
 		public function getNumOfUnansweredQuestionsInDB($pdo)
 		{
-			$sql = "SELECT * FROM question WHERE themeId=".$this->id." AND answerId IS NULL";
+			$sql = "SELECT * FROM question WHERE themeId=".$this->id." AND answer IS NULL";
 				$data = $pdo->query($sql);
 				if ($data)
 					return  $data->rowCount();

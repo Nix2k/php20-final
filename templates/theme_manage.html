@@ -9,7 +9,7 @@
 	</tr>
 	{% for theme in themes %}
 	<tr>
-		<th>{{ theme.getName() }}</th>
+		<th><a href='index.php?contr=question&act=showallintheme&themeid={{ theme.getId() }}'>{{ theme.getName() }}</th>
 		<th>{{ theme.getNumOfQuestions() }}</th>
 		<th>{{ theme.getNumOfPublished() }}</th>
 		<th>{{ theme.getNumOfUnanswered() }}</th>
