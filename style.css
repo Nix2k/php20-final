@@ -90,6 +90,7 @@ main {
 	top: 50px;
 	width: 100%;
 	height: calc(100vh - 100px);
+	overflow: auto;
 	display: -webkit-flex; 
 	-webkit-justify-content: flex-start;
 	display: flex;
