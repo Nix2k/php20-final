@@ -5,15 +5,16 @@
 		<th>Всего вопросов</th>
 		<th>Опубликовано вопросов</th>
 		<th>Без ответа</th>
-		<th>Действия</th>
+		<th colspan="2">Действия</th>
 	</tr>
 	{% for theme in themes %}
 	<tr>
-		<th><a href='index.php?contr=question&act=showallintheme&themeid={{ theme.getId() }}'>{{ theme.getName() }}</th>
-		<th>{{ theme.getNumOfQuestions() }}</th>
-		<th>{{ theme.getNumOfPublished() }}</th>
-		<th>{{ theme.getNumOfUnanswered() }}</th>
-		<th><a href='index.php?contr=theme&act=delete&id={{ theme.getId() }}'>Удалить</a></th>
+		<td><a href='index.php?contr=question&act=showallintheme&themeid={{ theme.getId() }}'>{{ theme.getName() }}</td>
+		<td>{{ theme.getNumOfQuestions() }}</td>
+		<td>{{ theme.getNumOfPublished() }}</td>
+		<td>{{ theme.getNumOfUnanswered() }}</td>
+		<td><a href='index.php?contr=theme&act=rename&id={{ theme.getId() }}'>Переименовать</a></td>
+		<td><a href='index.php?contr=theme&act=delete&id={{ theme.getId() }}'>Удалить</a></td>
 	</tr>
 	{% endfor %}
 </table>

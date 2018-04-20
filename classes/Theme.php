@@ -131,5 +131,17 @@
 					return  0;
 		}
 
+		public function setName($name, $pdo)
+		{
+			$this->name = $name;
+			$sql = "UPDATE theme SET theme='".$name."' WHERE id=".$this->id;
+			if ($pdo->exec($sql)==1) {
+				return true;
+			}
+			else {
+				return false;
+			}
+		}
+
 	}
 ?>

@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Хост: 127.0.0.1
--- Время создания: Апр 18 2018 г., 00:37
+-- Время создания: Апр 20 2018 г., 04:23
 -- Версия сервера: 10.1.30-MariaDB
 -- Версия PHP: 7.2.1
 
@@ -45,19 +45,6 @@ INSERT INTO `admin` (`id`, `name`, `password`, `email`) VALUES
 -- --------------------------------------------------------
 
 --
--- Структура таблицы `answer`
---
-
-CREATE TABLE `answer` (
-  `id` int(11) NOT NULL,
-  `adminId` int(11) NOT NULL,
-  `text` text NOT NULL,
-  `date` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
--- --------------------------------------------------------
-
---
 -- Структура таблицы `question`
 --
 
@@ -66,7 +53,7 @@ CREATE TABLE `question` (
   `themeId` int(11) NOT NULL,
   `email` varchar(25) NOT NULL,
   `text` text NOT NULL,
-  `answerId` int(11) DEFAULT NULL,
+  `answer` text,
   `blocked` int(11) DEFAULT NULL,
   `date` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -94,18 +81,10 @@ ALTER TABLE `admin`
   ADD UNIQUE KEY `name` (`name`);
 
 --
--- Индексы таблицы `answer`
---
-ALTER TABLE `answer`
-  ADD PRIMARY KEY (`id`),
-  ADD KEY `adminId` (`adminId`);
-
---
 -- Индексы таблицы `question`
 --
 ALTER TABLE `question`
   ADD PRIMARY KEY (`id`),
-  ADD KEY `answerId` (`answerId`),
   ADD KEY `question_ibfk_2` (`themeId`);
 
 --
@@ -123,41 +102,28 @@ ALTER TABLE `theme`
 -- AUTO_INCREMENT для таблицы `admin`
 --
 ALTER TABLE `admin`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
-
---
--- AUTO_INCREMENT для таблицы `answer`
---
-ALTER TABLE `answer`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT для таблицы `question`
 --
 ALTER TABLE `question`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT для таблицы `theme`
 --
 ALTER TABLE `theme`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
 -- Ограничения внешнего ключа сохраненных таблиц
 --
 
 --
--- Ограничения внешнего ключа таблицы `answer`
---
-ALTER TABLE `answer`
-  ADD CONSTRAINT `answer_ibfk_1` FOREIGN KEY (`adminId`) REFERENCES `admin` (`id`);
-
---
 -- Ограничения внешнего ключа таблицы `question`
 --
 ALTER TABLE `question`
-  ADD CONSTRAINT `question_ibfk_1` FOREIGN KEY (`answerId`) REFERENCES `answer` (`id`),
   ADD CONSTRAINT `question_ibfk_2` FOREIGN KEY (`themeId`) REFERENCES `theme` (`id`) ON DELETE CASCADE;
 COMMIT;
 

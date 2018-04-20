@@ -45,7 +45,7 @@ th {
 	text-align: center;
 }
 
-input, textarea {
+input, textarea, select {
 	margin: 10px auto;
 	padding: 8px;
 	border-radius: 2px;
@@ -100,7 +100,7 @@ main nav {
 	text-align: left;
 }
 
-main nav .menuItem {
+.menuItem {
 	display: block;
 	padding: 8px 0;
 }
@@ -122,4 +122,9 @@ footer {
 footer *{
 	padding: 0;
 	margin: 0;
+}
+
+.flexContainer {
+	display: flex;
+	align-items: center;
 }

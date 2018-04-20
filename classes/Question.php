@@ -42,7 +42,7 @@ class Question
 			return $questions;
 		}
 		else
-			return false;;
+			return false;
 	}
 
 	public function getAllQuestions($themeId, $pdo)
@@ -59,7 +59,24 @@ class Question
 			return $questions;
 		}
 		else
-			return false;;
+			return false;
+	}
+
+	public function getAllUnansweredQuestions($pdo)
+	{
+		$sql = "SELECT id FROM question WHERE answer IS NULL ORDER BY `date`";
+		$data = $pdo->query($sql);
+		if ($data){
+			$questions = array();
+			foreach ($data as $value) {
+				$question = new Question();
+				$question->getQuestionById($value['id'], $pdo);
+				$questions[] = $question;
+			}
+			return $questions;
+		}
+		else
+			return false;
 	}
 
 	public function getUnansweredQuestions($themeId, $pdo)
@@ -76,7 +93,7 @@ class Question
 			return $questions;
 		}
 		else
-			return false;;
+			return false;
 	}
 
 	public function addQuestion($themeId, $email, $text, $pdo)
@@ -136,6 +153,7 @@ class Question
 
 	public function block($pdo)
 	{
+		$this->blocked = 1;
 		$sql = "UPDATE question SET blocked=1 WHERE id=".$this->id;
 		if ($pdo->exec($sql)==1) {
 			return true;
@@ -147,6 +165,7 @@ class Question
 
 	public function unblock($pdo)
 	{
+		$this->blocked = null;
 		$sql = "UPDATE question SET blocked=null WHERE id=".$this->id;
 		if ($pdo->exec($sql)==1) {
 			return true;
@@ -156,8 +175,45 @@ class Question
 		}
 	}
 
-	public function answer($answer, $pdo)
+	public function setThemeId($themeId, $pdo)
 	{
+		$this->themeId = $themeId;
+		$sql = "UPDATE question SET themeId='".$themeId."' WHERE id=".$this->id;
+		if ($pdo->exec($sql)==1) {
+			return true;
+		}
+		else {
+			return false;
+		}
+	}
+
+	public function setEmail($email, $pdo)
+	{
+		$this->email = $email;
+		$sql = "UPDATE question SET email='".$email."' WHERE id=".$this->id;
+		if ($pdo->exec($sql)==1) {
+			return true;
+		}
+		else {
+			return false;
+		}
+	}
+
+	public function setText($text, $pdo)
+	{
+		$this->text = $text;
+		$sql = "UPDATE question SET `text`='".$text."' WHERE id=".$this->id;
+		if ($pdo->exec($sql)==1) {
+			return true;
+		}
+		else {
+			return false;
+		}
+	}
+
+	public function setAnswer($answer, $pdo)
+	{
+		$this->answer = $answer;
 		$sql = "UPDATE question SET answer='".$answer."' WHERE id=".$this->id;
 		if ($pdo->exec($sql)==1) {
 			return true;
