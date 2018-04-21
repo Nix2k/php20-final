@@ -8,7 +8,12 @@ class CAdmin
 	public function manage($pdo, $twig)
 	{	
 		$admin = new Admin();
-		if (!$admin->isLogedin($pdo)) header('Location: index.php?contr=admin&act=login');
+		if (!$admin->isLogedin($pdo)) {
+			$template = $twig ->loadTemplate('main.html');
+			$params = array('themes' => Theme::getAllThemes($pdo));
+			$template->display($params);
+			exit();
+		}
 		$admins = $admin->getAllAdmins($pdo);
 		if ($admins) {
 			$template = $twig->loadTemplate('admin.html');
